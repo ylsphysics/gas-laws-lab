@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>氣體實驗室 · 氣體定律與分子運動論</title>
+<style>
+:root{color-scheme:light;--ink:#193542;--muted:#59717a;--line:#d7e3e5;--teal:#087f83;--orange:#b95b25}*{box-sizing:border-box}body{margin:0;background:#f0f5f4;color:var(--ink);font:16px/1.6 system-ui,"Microsoft JhengHei",sans-serif}header{background:#123c48;color:white;padding:28px max(24px,calc((100vw - 1240px)/2))}header small{color:#8edbce;letter-spacing:3px}h1{font-size:30px;margin:5px 0}header p{margin:0;color:#c9dddd}main{max-width:1288px;margin:auto;padding:24px}button,select,input{font:inherit}button,select{border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);padding:9px 15px;cursor:pointer}button:hover{border-color:var(--teal)}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #da8a34;outline-offset:3px}button.active,.primary{background:var(--teal);color:white;border-color:var(--teal)}nav{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;min-width:0}.panel h2{font-size:19px;margin:0 0 15px}.topline{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.tag{font-size:13px;color:var(--teal);background:#e7f4f0;border-radius:20px;padding:4px 12px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.metric{border-left:3px solid #70bcb4;padding-left:13px}.metric span{font-size:13px;color:var(--muted);display:block}.metric strong{font-size:25px;font-weight:650;font-variant-numeric:tabular-nums}.metric small{font-size:13px}canvas{width:100%;display:block}#chamber{height:310px;background:#112c3b;border-radius:12px}.legend,.hint{font-size:13px;color:var(--muted)}.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:9px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}.control{margin:19px 0}.control label{display:flex;justify-content:space-between;gap:8px;font-weight:600}.control output{font-variant-numeric:tabular-nums;color:var(--teal)}input[type=range]{width:100%;accent-color:var(--teal);margin:12px 0 0}input:disabled{opacity:.4}.control small{display:block;color:var(--muted);font-size:12px}.formula{padding:16px;background:#edf6f3;border-radius:10px;margin-top:18px}.formula strong{font-size:23px}.formula p{font-size:14px;margin:8px 0 0}.lower{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;margin-top:20px}#graph{height:250px}.prompt{border-left:3px solid #d98c4f;padding-left:12px;margin-top:18px;font-size:14px}.tablewrap{overflow:auto;max-height:280px}table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}th,td{text-align:right;border-bottom:1px solid var(--line);padding:9px 7px;white-space:nowrap}th:first-child,td:first-child{text-align:left}td.empty{text-align:center;color:var(--muted);padding:28px}.quiz{margin-top:20px}.quiz button{margin:5px 5px 5px 0}.feedback{min-height:28px;font-size:14px}.note{font-size:14px;color:var(--muted)}details{margin-top:20px}summary{cursor:pointer;font-weight:600}footer{padding:22px 0;font-size:13px;color:var(--muted)}@media(max-width:900px){.layout,.lower{grid-template-columns:1fr}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}.controls h2,.controls .formula,.controls .actions{grid-column:1/-1}}@media(max-width:540px){main{padding:14px}header{padding:22px 18px}h1{font-size:25px}.panel{padding:16px}.controls{display:block}.metric strong{font-size:21px}.metrics{gap:6px}#chamber{height:260px}nav button{flex:1 1 42%;padding:9px 5px}.topline .hint{max-width:100%}}
+
+/* Classroom controls and linked representations */
+#chamber{touch-action:pan-y}#chamber.draggable{cursor:ew-resize;touch-action:none}
+.intro{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}.intro p{margin:0;font-size:14px;color:var(--muted)}
+.control input[type=number]{width:100%;border:1px solid var(--line);border-radius:7px;padding:5px 10px;color:var(--ink);background:#f8fbfa;margin-top:6px}
+.control select{width:100%;padding:8px}.mini{font-size:13px}.compare{border-top:1px solid var(--line);margin-top:18px;padding-top:14px}.compare p{margin:5px 0;font-size:13px}.ratios{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.ratios span{color:var(--muted);font-size:12px}.ratios strong{display:block;font-size:18px;color:var(--ink)}
+.graph-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.graph-controls select{max-width:100%;font-size:14px}#graph{height:280px}.kinetic{margin-top:20px}.kinetic-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}.bridge{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.bridge strong{font-size:19px}.bridge p{margin:7px 0;font-size:14px}.collision-equation{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:center;margin:16px 0}.collision-equation div{background:#edf6f3;padding:13px 10px;border-radius:8px}.collision-equation strong{display:block;font-size:24px;color:var(--teal)}.collision-equation span{font-size:12px;display:block}.collision-equation b{text-align:center}.status{font-size:13px;color:var(--teal);min-height:21px}.gas-pair{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.gas-pair label{font-size:14px}#distribution{height:230px}.controls .setup{grid-column:1/-1}.formula{margin-top:12px}.control{margin:12px 0}.sources{font-size:13px}button:disabled{opacity:.45;cursor:not-allowed}.lesson-pills{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.lesson-pills button{font-size:13px}.note b{color:var(--ink)}
+@media(max-width:700px){.kinetic-grid{grid-template-columns:1fr}.collision-equation{gap:4px}.collision-equation div{padding:10px 6px}.collision-equation strong{font-size:21px}.ratios{grid-template-columns:repeat(2,1fr)}}@media print{header{background:white;color:#193542}button,nav,.controls,.quiz{display:none}.layout,.lower,.kinetic-grid{display:block}.panel{break-inside:avoid;margin-bottom:16px}}
+body.projector{font-size:19px}body.projector .metric strong{font-size:32px}body.projector #chamber{height:390px}body.projector .hint,body.projector .note{font-size:16px}body.projector .layout{grid-template-columns:minmax(0,1fr) 360px}@media(max-width:900px){body.projector .layout{grid-template-columns:1fr}}
+</style>
+<style>
+[hidden]{display:none!important}.view-switch{padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:22px}.view-switch button{font-weight:650}.bead-heading{margin-bottom:18px}.bead-heading h2{font-size:26px;margin:0 0 6px}.bead-heading p{margin:0;color:var(--muted)}.bead-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:20px}.bead-apparatus{display:flex;flex-direction:column}.bead-scene{height:460px;border-radius:12px;background:#112c3b}.bead-controls label{font-weight:600}.bead-controls select{width:100%;white-space:normal}.bead-controls .control{margin:22px 0}.bead-controls .control output{white-space:nowrap}.bead-map{margin-top:20px}.bead-map th,.bead-map td{text-align:left;white-space:normal}.bead-explanation{margin-top:18px}.bead-explanation p{margin:8px 0}.bead-explanation h3{font-size:17px;margin:0}.bead-status{min-height:26px;margin:8px 0 0;color:var(--teal);font-size:14px}.bead-limits{color:#a34e22}.bead-relations{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}.bead-relations span{font-size:13px;color:var(--muted)}.bead-relations strong{display:block;font-size:22px}.bead-model{font-size:13px;color:var(--muted);margin-top:16px}.bead-lock{display:flex;gap:8px;align-items:center}.bead-lock input{accent-color:var(--teal)}body.projector .bead-scene{height:520px}
+@media(max-width:900px){.bead-layout{grid-template-columns:1fr}.bead-controls .control{margin:18px 0}}@media(max-width:540px){.bead-scene{height:430px}.bead-relations{grid-template-columns:repeat(2,minmax(0,1fr))}.bead-heading h2{font-size:23px}.view-switch button{flex:1 1 100%}}
+</style>
+<style>
+.bead-stage{position:relative}.bead-hands{position:absolute;inset:0;pointer-events:none}.bead-weight{position:absolute;pointer-events:auto;width:var(--weight-width,44px);height:var(--weight-height,32px);padding:0;border:1px solid #9e6a2e;border-radius:5px 5px 2px 2px;background:linear-gradient(#f4d9a4,#c89552);color:#443119;font-size:var(--hardware-font,14px);font-weight:700;cursor:grab;touch-action:none;user-select:none;z-index:3;box-shadow:0 2px 0 #805925}.bead-weight::before{content:'';position:absolute;top:-6px;left:35%;width:30%;height:6px;border:2px solid #c89552;border-bottom:0;border-radius:4px 4px 0 0}.bead-weight:disabled{opacity:.65;cursor:not-allowed}.bead-weight.dragging{cursor:grabbing;z-index:5;box-shadow:0 4px 10px #0008}.bead-rack{position:absolute;border:1px solid #6c97a5;border-radius:8px;background:#1a3b4b;color:#c8dfe6;text-align:center;font-size:var(--hardware-font,14px);padding-top:10px}.bead-rack small{display:block;font-size:13px}.bead-drop{position:absolute;outline:2px dashed transparent;border-radius:6px}.bead-stage.is-dragging .bead-drop{outline-color:#83e4cb;background:#83e4cb15}.bead-stage.is-dragging .bead-rack{border:2px dashed #83e4cb}.bead-dial{position:absolute;width:var(--dial-size,88px);height:var(--dial-size,88px);border:3px solid #90c3c7;border-radius:50%;background:radial-gradient(circle at 35% 30%,#c0d0cf,#5b777e 80%);pointer-events:auto;cursor:grab;touch-action:none;user-select:none;z-index:2;box-shadow:0 3px 0 #071e2b}.bead-dial::before{content:'';position:absolute;width:5%;height:34%;left:47.5%;top:12%;background:#123c48;border-radius:3px;transform-origin:50% 112%;transform:rotate(var(--dial-angle,0deg))}.bead-dial:focus-visible{outline:3px solid #ffcf75;outline-offset:5px}.bead-dial[aria-disabled=true]{opacity:.5;cursor:not-allowed}.bead-dial-label{position:absolute;text-align:center;color:#c8dfe6;font-size:var(--hardware-font,14px)}.bead-dial-label output{font-size:24px;display:block;color:#a3f0de;font-weight:700}.bead-dial-label small{font-size:13px;display:block}.bead-hands button:focus-visible{outline:3px solid #ffcf75;outline-offset:3px}
+body.bead-active header{display:none}body.bead-active main{max-width:1440px;padding-top:16px}body.bead-active .view-switch{margin-bottom:14px;padding-bottom:12px}.bead-heading{margin-bottom:14px}.bead-heading h2{font-size:24px}.bead-heading p{font-size:14px}.bead-layout{grid-template-columns:minmax(0,1fr) 280px;gap:16px;align-items:start}.bead-apparatus{padding:16px}.bead-apparatus .topline h2{margin-bottom:10px}.bead-scene,body.bead-active.projector .bead-scene{height:clamp(480px,calc(100dvh - 235px),640px)}.bead-controls{padding:18px}.bead-controls .control{margin:15px 0}.bead-controls .control small{font-size:13px}.bead-controls .formula{padding:13px}.bead-relations{margin:0 0 12px;gap:10px}.bead-relations strong{font-size:25px}.bead-apparatus #beadDirectHelp{margin:10px 0;font-size:13px;line-height:1.5}.bead-apparatus .actions{margin-top:0}.bead-apparatus>p.hint{margin:8px 0 0}.bead-status{margin:7px 0 0;min-height:0}.bead-dial-label{line-height:1.35}
+@media(max-width:900px){.bead-layout{grid-template-columns:1fr}}@media(max-width:540px){body.bead-active main{padding:12px}.bead-apparatus{padding:12px}.bead-scene,body.bead-active.projector .bead-scene{height:510px}.bead-relations{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.bead-relations span{font-size:11px;line-height:1.35;display:block}.bead-relations strong{font-size:19px}.bead-heading h2{font-size:22px}}
+</style>
+</head>
+<body>
+<header><small>PHYSICS / INTERACTIVE LAB</small><h1>氣體實驗室</h1><p>5.1 氣體定律 × 5.2 分子運動論｜預測、操作、記錄、解釋</p></header>
+<main>
+<nav class="view-switch" aria-label="學習版面"><button id="theoryViewButton" class="active" aria-pressed="true" aria-controls="theoryView">氣體定律與分子運動</button><button id="beadViewButton" aria-pressed="false" aria-controls="beadView">5.2 滾珠模擬器</button></nav>
+<div id="theoryView">
+<nav aria-label="實驗模式"><button data-mode="boyle" class="active" aria-pressed="true">01 波義耳定律</button><button data-mode="charles" aria-pressed="false">02 查理定律</button><button data-mode="pressure" aria-pressed="false">03 氣壓定律</button><button data-mode="amount" aria-pressed="false">04 分子數與體積</button><button data-mode="free" aria-pressed="false">05 自由探索</button></nav>
+<div class="intro"><p>拖動滑桿或輸入數值；先儲存參考狀態，再比較改變。各模式會保留本次使用的狀態與記錄。</p><button id="lessonMode">投影模式</button></div><div class="layout">
+<section class="panel"><div class="topline"><h2>分子運動觀察窗</h2><span class="tag" id="constraint">固定溫度 T、物質的量 n</span></div>
+<div class="metrics"><div class="metric"><span>氣體壓強 p</span><strong id="pValue"></strong><small> kPa</small></div><div class="metric"><span>方均根速率 vᵣₘₛ</span><strong id="speedValue"></strong><small> m/s</small></div><div class="metric"><span>平均平動動能</span><strong id="energyValue"></strong><small> ×10⁻²¹ J</small></div></div>
+<canvas id="chamber" role="img" aria-label="氣體分子的二維投影：分子碰壁後反彈；右側活塞位置代表體積。"></canvas>
+<div class="legend"><span><i class="dot" style="background:#75d7e4"></i>分子示意</span><span><i class="dot" style="background:#ffcf75"></i>追蹤分子與軌跡</span><span>亮點：撞擊容器壁</span></div>
+<div class="actions"><button id="pause">暫停動畫</button><label><input id="trail" type="checkbox" checked> 顯示軌跡</label><label><input id="vectors" type="checkbox"> 速度箭嘴</label><label class="hint">播放速度 <select id="rate" aria-label="動畫播放速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label></div>
+<p class="hint" id="pistonHelp"></p>
+<div class="compare"><div class="topline"><b>前後狀態對照</b><button id="baseline">將目前狀態設為參考</button></div><p id="baselineLabel"></p><div class="ratios" id="ratios"></div></div>
+</section>
+<aside class="panel controls"><h2>實驗控制</h2><div class="control setup"><label for="setup">固定條件</label><select id="setup"></select><small>更改固定條件可比較不同曲線；原有記錄仍保留。</small></div>
+<div class="control"><label for="temperature">溫度 T <output id="tLabel"></output></label><input id="temperature" type="range" min="150" max="600" step="1" value="300"><input id="temperatureNumber" type="number" aria-label="溫度，K" min="150" max="600" step="1"><small id="tHelp"></small></div>
+<div class="control"><label for="volume">體積 V <output id="vLabel"></output></label><input id="volume" type="range" min="5" max="30" step="0.1" value="15"><input id="volumeNumber" type="number" aria-label="體積，L" min="5" max="30" step="0.1"><small id="vHelp"></small></div>
+<div class="control"><label for="amount">物質的量 n <output id="nLabel"></output></label><input id="amount" type="range" min="0.2" max="1" step="0.05" value="0.5"><input id="amountNumber" type="number" aria-label="物質的量，mol" min="0.2" max="1" step="0.05"><small>實際分子數 N = nNₐ；一個小球代表大量分子。</small></div>
+<div class="control setup"><label for="gas">氣體種類</label><select id="gas"><option value="0.028">氮氣 N₂ · 28.0 g/mol</option><option value="0.002016">氫氣 H₂ · 2.016 g/mol</option><option value="0.031999">氧氣 O₂ · 31.999 g/mol</option><option value="0.004003">氦氣 He · 4.003 g/mol</option></select><small>更換整份氣體，保持 n、T、V 不變；觀察速率。</small></div><div class="formula"><strong id="law"></strong><p id="lawText"></p></div><div class="actions"><button class="primary" id="record">記錄數據</button><button id="reset">重設本實驗</button></div><div class="status" id="inputStatus" aria-live="polite"></div></aside>
+</div>
+<div class="lower"><section class="panel"><div class="topline"><h2 id="graphTitle">p–V 關係圖</h2><span class="hint">曲線：理論值　圓點：目前狀態</span></div><div class="graph-controls"><label for="graphView" class="mini">橫軸</label><select id="graphView"></select><label class="mini"><input id="showReference" type="checkbox" checked> 參考曲線（橙）</label></div><canvas id="graph" role="img" aria-label="氣體定律關係圖"></canvas><p class="hint" id="graphNote"></p><div class="prompt" id="task"></div></section>
+<section class="panel"><div class="topline"><h2>我的實驗記錄</h2><div><button id="export">匯出 CSV</button> <button id="clear">清除</button></div></div><div class="tablewrap"><table><thead><tr><th>次數 / 氣體</th><th>T / K</th><th>V / L</th><th>n / mol</th><th>p / kPa</th><th id="invariantHeader">pV</th></tr></thead><tbody id="rows"></tbody></table></div><p class="hint" id="recordHint">改變一個變量，記錄至少三組數據，再找出不變的量。</p><p class="note" id="molecular"></p></section></div>
+
+<section class="panel kinetic"><div class="topline"><h2>從微觀解釋宏觀</h2><span class="tag">教材 5.2｜同溫不等於同速</span></div>
+<div class="kinetic-grid"><div><b>壓強為甚麼改變？</b><p class="hint">以下是相對參考狀態的理論倍數，並非動畫碰撞次數。撞壁頻率以<b>每單位面積、每單位時間</b>計算。</p>
+<div class="collision-equation"><div><strong id="fluxRatio"></strong><span>撞壁頻率</span></div><b>×</b><div><strong id="impulseRatio"></strong><span>平均法向衝量</span></div><b>=</b><div><strong id="pressureRatio"></strong><span>壓強</span></div></div>
+<p class="note" id="collisionExplain"></p>
+<div class="bridge"><strong>pV = ⅓Nm⟨c²⟩ = nRT</strong><p id="microValues"></p><p id="totalEnergy"></p><p class="hint">⟨c²⟩ 是速率平方的平均；cᵣₘₛ = √⟨c²⟩，不是速率的算術平均。</p></div>
+</div><div><div class="gas-pair"><b>分子速率分佈</b><label><input id="compareGas" type="checkbox" checked> 比較同溫氧氣</label></div><canvas id="distribution" role="img" aria-label="三維理想氣體的理論速率分佈"></canvas><p class="note" id="gasComparison"></p><p class="hint">曲線是理論分佈，不是畫面小球的直方圖。虛線標示方均根速率；曲線下的總面積均為 1。</p></div></div></section>
+<section class="panel quiz"><h2>想一想，再驗證</h2><p id="question"></p><div id="answers"></div><div id="feedback" class="feedback" aria-live="polite"></div><button id="next">下一題 →</button></section>
+<details class="panel"><summary>模型假設與公式</summary><p>理想氣體：分子的體積可忽略；除碰撞外，分子間作用力可忽略；碰撞為完全彈性。壓強源於分子撞擊容器壁時的動量改變。</p><p>pV = nRT = NkᵦT；平均平動動能 = ³⁄₂kᵦT；vᵣₘₛ = √(3RT/M)。本模擬可切換氮氣、氫氣、氧氣和氦氣；M 以 kg/mol 代入。R = 8.314 J mol⁻¹ K⁻¹，kᵦ = 1.380649 × 10⁻²³ J/K。</p><p>溫度必須使用開爾文：T / K = θ / °C + 273.15。因為 1 kPa·L = 1 J，畫面可直接以 kPa、L 代入 pV = nRT。</p><p>分子具有三個方向的速度，畫面只顯示其中兩個方向。小球是點分子示意，不模擬球與球的碰撞；牆面反彈為彈性。溫度或氣體種類改變時，速度按 √(T/M) 縮放。讀數與曲線來自三維理想氣體公式，並非由少量動畫小球的碰壁次數估算。查理定律由固定外壓決定體積；本模擬不計算活塞的瞬間力學過程或絕熱壓縮。</p></details>
+<footer><div class="sources">教材對應：5.1 第 23–27、35–60、72–76、96–105 頁；5.2 第 19–23、31–48 頁。攝氏換算採 273.15（教材通常近似 273）；不照錄教材的明顯排印錯誤。</div>學習提示：先作預測 → 只改變一個變量 → 記錄數據 → 用分子運動解釋結果。</footer>
+</div>
+<section id="beadView" aria-labelledby="beadTitle" hidden>
+<div class="bead-heading"><h2 id="beadTitle">用滾珠「看見」氣體定律</h2><p>電動機使底板振動，滾珠撞擊活塞。改變電壓、負重或滾珠數目，看看活塞往哪裏移動。</p></div>
+<div class="bead-layout">
+<section class="panel bead-apparatus"><div class="topline"><h2>透明筒與振動器</h2><span class="tag" id="beadCondition">固定電壓、滾珠數目</span></div>
+<div class="bead-relations"><div><span>温度 T/T₀</span><strong id="beadTempRatio"></strong></div><div><span>分子數 N/N₀</span><strong id="beadCountRatio"></strong></div><div><span>體積 V/V₀</span><strong id="beadHeightRatio"></strong></div><div><span>壓強 p/p₀</span><strong id="beadPressureRatio"></strong></div></div>
+<div class="bead-stage" id="beadStage"><canvas id="beadCanvas" class="bead-scene" role="img" aria-label="直立透明筒內的滾珠，由底部振動器帶動，撞擊可活動活塞。"></canvas><div class="bead-hands"><div id="beadPistonDrop" class="bead-drop" aria-hidden="true"></div><div id="beadRack" class="bead-rack" aria-hidden="true">砝碼架<small>每塊 0.5 格</small></div><div id="beadWeights"></div><div id="beadDial" class="bead-dial" role="slider" tabindex="0" aria-label="電動機電壓旋鈕" aria-valuemin="3" aria-valuemax="9" aria-valuenow="6" aria-describedby="beadDirectHelp"></div><div id="beadDialLabel" class="bead-dial-label">電壓旋鈕<output id="beadDialValue">6.0 格</output><small id="beadDialState">順時針增加</small></div></div></div>
+<p class="hint" id="beadDirectHelp">拖放砝碼到活塞上增加負重，拖回砝碼架則移除；也可點按砝碼。按住旋鈕沿圓周轉動，順時針提高電壓；鍵盤方向鍵可微調。</p>
+<div class="actions"><button id="beadPause">暫停動畫</button><button id="beadReset">重設本實驗</button><span class="hint">電壓、負重與高度均採教學刻度</span></div>
+<p class="hint">參考：電壓 6.0 格、40 顆滾珠、總負重 2.0 格、活塞高度 h₀。</p>
+<p class="bead-status" id="beadStatus" aria-live="polite"></p>
+</section>
+<aside class="panel bead-controls"><h2>教材實驗 5d</h2>
+<label for="beadExperiment">選擇要研究的變化</label><select id="beadExperiment"><option value="boyle">A　負重改變 → 波義耳定律</option><option value="charles">B　電壓改變、活塞自由 → 查理定律</option><option value="pressure">C　電壓改變、固定高度 → 氣壓定律</option><option value="amount">D　滾珠數目改變 → V–N 關係</option><option value="free" selected>自由調節</option></select>
+<div class="control"><label for="beadVoltage">電動機電壓 <output id="beadVoltageValue"></output></label><input id="beadVoltage" type="range" min="3" max="9" step="0.1" value="6"><small>電壓 ↑ → 振動更強 → 滾珠運動更快。</small></div>
+<div class="control"><label for="beadLoad">活塞總負重 <output id="beadLoadValue"></output></label><input id="beadLoad" type="range" min="1" max="4" step="0.5" value="2"><small>活塞本身 1.0 格，每塊砝碼 0.5 格。自由活塞平衡時，負重越大，所需內壓越高。</small></div>
+<div class="control"><label for="beadCount">滾珠數目 <output id="beadCountValue"></output></label><input id="beadCount" type="range" min="20" max="80" step="1" value="40"><small>一顆滾珠比喻一個分子；增加數目，比喻加入氣體。</small></div>
+<label class="bead-lock"><input id="beadLocked" type="checkbox"> 夾具固定活塞高度</label><p class="hint" id="beadLockHelp"></p>
+<div class="formula"><strong id="beadLaw"></strong><p id="beadPrediction"></p></div>
+</aside></div>
+<section class="panel bead-explanation"><div class="topline"><h2>裝置變化 → 分子解釋 → 氣體定律</h2><span class="tag">先預測活塞往上還是往下，再操作</span></div><p id="beadReason"></p><p class="note" id="beadClampForce"></p></section>
+<section class="panel bead-map"><h2>這個比喻，對應甚麼？</h2><table><thead><tr><th>模擬器的部分</th><th>氣體物理量</th><th>怎樣觀察</th></tr></thead><tbody><tr><td>電壓與底板振動</td><td>加熱與温度 T</td><td>電壓提高，滾珠平均速率增加，比喻氣體升温。</td></tr><tr><td>滾珠的數目</td><td>分子總數 N</td><td>固定電壓和負重時，加入滾珠，平衡高度增加。</td></tr><tr><td>自由活塞的總負重</td><td>平衡壓強 p</td><td>截面積不變，所需壓強與總負重成正比。</td></tr><tr><td>活塞離底板的高度 h</td><td>體積 V</td><td>透明筒截面積固定，V = Ah，所以 V ∝ h。</td></tr><tr><td>滾珠撞擊活塞</td><td>分子撞壁產生壓強</td><td>滾珠傳遞動量，向上支撐活塞。</td></tr></tbody></table>
+<p class="bead-model">教學模型：以相對電壓 u = U/U₀ 設定速率指標 ∝ u、温度指標 T/T₀ = u²，再以 pV ∝ NT 求活塞的平均平衡高度。這是方便比較的設定，並非真實裝置的電壓—温度校準。滾珠動畫只示意振動與反彈，活塞高度並非由逐次碰撞求得。與真實氣體相比，滾珠受重力影響，碰撞亦會耗能；真實裝置要由電動機持續供能。</p>
+<p class="hint">教材對應：5.2 第 9–14 頁。第 14 頁「n ↑ ⇒ V ↓」為排印錯誤；此處依 pV = nRT 顯示固定 T、p 時，N ↑ ⇒ V ↑。</p></section>
+</section>
+</main>
+<script>
+
+(()=>{'use strict';
+const $=id=>document.getElementById(id),R=8.314,k=1.380649e-23,NA=R/k;
+let M=.028,mode='boyle',T=300,V=15,n=.5,p=0,fixedPressure=.5*R*300/15;
+let records=[],particles=[],flashes=[],trail=[],baseline=null,running=!matchMedia('(prefers-reduced-motion: reduce)').matches,qIndex=0;
+let graphChoice='volume',saved={},initialized=false,dragging=false;
+const modes={boyle:{name:'波義耳定律',constraint:'固定溫度 T、物質的量 n',law:'pV = 常數',text:'等溫過程：體積減半，壓強加倍。',task:'試做：將體積由 15 L 減至 7.5 L。壓強如何改變？記錄三組數據，檢查 pV。',molecular:'體積減少，分子平均速率不變，但分子更頻密撞擊容器壁，壓強增加。',inv:'pV / (kPa·L)'},charles:{name:'查理定律',constraint:'固定壓強 p、物質的量 n',law:'V / T = 常數',text:'等壓過程：絕對溫度加倍，體積加倍。',task:'試做：將溫度由 300 K 加至 600 K。體積和分子速率會各增加多少？',molecular:'溫度升高，分子運動加快；容器膨脹使分子密度下降，壓強因而保持不變。',inv:'V/T / (L/K)'},pressure:{name:'氣壓定律',constraint:'固定體積 V、物質的量 n',law:'p / T = 常數',text:'等容過程：絕對溫度加倍，壓強加倍。',task:'試做：比較 150 K、300 K 和 600 K 的壓強。留意溫度加倍並不令分子速率加倍。',molecular:'溫度升高，分子更頻密撞壁，且每次撞擊的平均動量改變更大，所以壓強增加。',inv:'p/T / (kPa/K)'},free:{name:'自由探索',constraint:'自由調整 T、V、n',law:'pV = nRT',text:'同時考慮溫度、體積與氣體的物質的量。',task:'挑戰：把溫度加倍，再把體積加倍，壓強會回到原值嗎？固定其他條件，將 n 加倍又會怎樣？',molecular:'在相同溫度下，增加同一種氣體的物質的量不會增加平均動能；固定體積時，壓強會增加。',inv:'pV/(nT) / (J mol⁻¹ K⁻¹)'}};
+modes.amount={name:'分子數與體積',constraint:'固定溫度 T、壓強 p',law:'V / n = 常數',text:'同溫同壓：分子數加倍，體積也加倍。',task:'試做：把 n 由 0.50 mol 增至 1.00 mol。活塞如何移動？分子密度與壓強會改變嗎？',molecular:'增加分子數時，容器膨脹，使分子密度維持不變。溫度不變，所以平均平動動能及壓強均不變。',inv:'V/n / (L/mol)'};
+const gasName=mass=>({'0.028':'N₂','0.002016':'H₂','0.031999':'O₂','0.004003':'He'}[String(mass)]||'氣體');
+const pressure=()=>n*R*T/V;
+const snapshot=()=>({T,V,n,p:pressure(),M,fixedPressure});
+const invariant=()=>mode==='boyle'?p*V:mode==='charles'?V/T:mode==='pressure'?p/T:mode==='amount'?V/n:p*V/(n*T);
+function gaussian(){return Math.sqrt(-2*Math.log(Math.max(1e-9,Math.random())))*Math.cos(2*Math.PI*Math.random())}
+function populate(){const count=Math.round(n*160);while(particles.length<count)particles.push({x:Math.random(),y:Math.random(),vx:gaussian(),vy:gaussian(),vz:gaussian()});particles.length=count;trail=[]}
+function setOptions(id,options,value){$(id).replaceChildren();options.forEach(([v,text])=>{const el=document.createElement('option');el.value=v;el.textContent=text;$(id).append(el)});$(id).value=value}
+function setupUI(){
+ const opts=mode==='boyle'?[[150,'T = 150 K'],[300,'T = 300 K'],[450,'T = 450 K'],[600,'T = 600 K']]:mode==='pressure'?[[7.5,'V = 7.5 L'],[15,'V = 15 L'],[30,'V = 30 L']]:[[.5*R*300/15,'p = 83.14 kPa'],[R*300/15,'p = 166.28 kPa']];
+ $('setup').closest('.control').hidden=mode==='free';
+ setOptions('setup',opts,mode==='boyle'?T:mode==='pressure'?V:fixedPressure);
+ const choices=mode==='charles'||mode==='pressure'?[['kelvin','開氏溫度 T / K'],['celsius','攝氏溫度 θ / °C']]:mode==='amount'?[['amount','物質的量 n / mol']]:[['volume','體積 V / L'],['inverse','體積倒數 1/V / L⁻¹']];
+ if(!choices.some(x=>x[0]===graphChoice))graphChoice=choices[0][0];
+ setOptions('graphView',choices,graphChoice);
+ ['temperature','volume','amount'].forEach(id=>{
+ const disabled=id==='temperature'?mode==='boyle'||mode==='amount':id==='volume'?['charles','pressure','amount'].includes(mode):!['free','amount'].includes(mode);
+ $(id).disabled=disabled;$(id+'Number').disabled=disabled;
+ });
+ const minV=(mode==='charles'||mode==='amount')?2.5:5;$('volume').min=minV;$('volumeNumber').min=minV;
+ $('chamber').classList.toggle('draggable',!$('volume').disabled);
+ $('pistonHelp').textContent=$('volume').disabled?'活塞位置由固定條件決定。動畫已減慢，播放速度不改變溫度。':'可在觀察窗拖動活塞，也可使用體積滑桿或鍵盤輸入。動畫已減慢。';
+}
+function update(){
+ if(mode==='charles'||mode==='amount')V=n*R*T/fixedPressure;
+ p=pressure();
+ for(const [id,val] of [['temperature',T],['volume',V],['amount',n]]){$(id).value=val;$(id+'Number').value=Number(val.toFixed(id==='volume'?3:2))}
+ $('tLabel').textContent=T+' K';$('vLabel').textContent=V.toFixed(2)+' L';$('nLabel').textContent=n.toFixed(2)+' mol';
+ $('tHelp').textContent=(T-273.15).toFixed(2)+' °C'+($('temperature').disabled?' · 本組固定':'');
+ $('vHelp').textContent=mode==='charles'||mode==='amount'?'活塞自動調整，保持壓強不變。':mode==='pressure'?'本組固定體積。':'緩慢改變體積，保持熱平衡。';
+ $('pValue').textContent=p.toFixed(1);$('speedValue').textContent=Math.sqrt(3*R*T/M).toFixed(0);$('energyValue').textContent=(1.5*k*T/1e-21).toFixed(2);
+ $('gas').value=M;
+ updateComparison();drawGraph();drawDistribution();drawChamber(0);
+}
+function setMode(value,reset=false){
+ if(initialized)saved[mode]={...snapshot(),records:records.slice(),baseline:{...baseline},graphChoice};
+ mode=value;const previous=!reset&&saved[mode];
+ if(previous){({T,V,n,M,fixedPressure,graphChoice}=previous);records=previous.records.slice();baseline={...previous.baseline}}
+ else {T=300;V=15;n=.5;M=.028;fixedPressure=.5*R*300/15;records=[];graphChoice='volume';baseline=snapshot()}
+ particles=[];flashes=[];populate();initialized=true;
+ document.querySelectorAll('[data-mode]').forEach(b=>{const selected=b.dataset.mode===mode;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',selected)});
+ const cfg=modes[mode];['constraint','law'].forEach(id=>$(id).textContent=cfg[id]);$('lawText').textContent=cfg.text;$('task').textContent=cfg.task;$('molecular').textContent=cfg.molecular;$('invariantHeader').textContent=cfg.inv;
+ $('recordHint').textContent='方形：已記錄數據。更改固定條件後，不變量的數值也可能改變；比較時請留意 T、V、n。切換模式保留記錄。';
+ $('inputStatus').textContent='';setupUI();renderRows();update();
+}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+function setVariable(id,input){
+ if($(id).disabled)return;
+ const value=Number(input),min=+$(id).min,max=+$(id).max;
+ if(!Number.isFinite(value)||input===''){$('inputStatus').textContent='請輸入有效數值。';update();return}
+ const bounded=Math.max(min,Math.min(max,value)),step=+$(id).step;const v=Number((min+Math.round((bounded-min)/step)*step).toFixed(4));$('inputStatus').textContent=bounded!==value?'數值已限制於 '+min+' 至 '+max+'。':v!==value?'已按控制項精度調整數值。':'';
+ if(id==='temperature')T=v;else if(id==='volume')V=v;else n=v;
+ trail=[];flashes=[];populate();update();
+}
+for(const id of ['temperature','volume','amount']){$(id).oninput=e=>setVariable(id,e.target.value);$(id+'Number').onchange=e=>setVariable(id,e.target.value)}
+$('setup').onchange=e=>{if(mode==='boyle')T=+e.target.value;else if(mode==='pressure')V=+e.target.value;else fixedPressure=+e.target.value;trail=[];flashes=[];update()};
+$('gas').onchange=e=>{M=+e.target.value;trail=[];update()};
+$('reset').onclick=()=>setMode(mode,true);
+$('baseline').onclick=()=>{baseline=snapshot();update()};
+$('graphView').onchange=e=>{graphChoice=e.target.value;drawGraph()};
+$('showReference').onchange=drawGraph;$('compareGas').onchange=drawDistribution;
+$('lessonMode').onclick=()=>{document.body.classList.toggle('projector');const on=document.body.classList.contains('projector');$('lessonMode').textContent=on?'一般模式':'投影模式';$('lessonMode').setAttribute('aria-pressed',on)};
+function setPause(){$('pause').textContent=running?'暫停動畫':'播放動畫';$('pause').setAttribute('aria-pressed',!running)}
+$('pause').onclick=()=>{running=!running;setPause()};setPause();
+$('trail').onchange=()=>{trail=[];drawChamber(0)};$('vectors').onchange=()=>drawChamber(0);
+function fit(canvas){const r=canvas.getBoundingClientRect(),d=devicePixelRatio||1;if(canvas.width!==Math.round(r.width*d)||canvas.height!==Math.round(r.height*d)){canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d)}const c=canvas.getContext('2d');c.setTransform(d,0,0,d,0,0);return[c,r.width,r.height]}
+function drawChamber(dt){
+ const[c,w,h]=fit($('chamber'));c.clearRect(0,0,w,h);
+ const left=22,top=42,height=h-68,width=(w-65)*V/30,right=left+width,bottom=top+height,scale=52*Math.sqrt(T/300*.028/M);
+ c.fillStyle='#193e4d';c.fillRect(left,top,width,height);c.strokeStyle='#6b98a7';c.lineWidth=2;c.strokeRect(left,top,width,height);
+ c.fillStyle='#c2dedc';c.fillRect(right,top-7,9,height+14);c.fillStyle='#658d9b';c.fillRect(right+9,top+height/2-5,Math.max(0,w-right-15),10);
+ c.font='13px system-ui';c.fillStyle='#bbd8df';c.fillText('V = '+V.toFixed(2)+' L · '+gasName(M),left,24);
+ c.font='11px system-ui';c.textAlign='right';c.fillText($('volume').disabled?'活塞受固定條件約束':'↔ 拖動活塞',w-14,h-9);c.textAlign='left';
+ // Reflect overshoot as well as velocity so slow frames do not trap particles at walls.
+ for(const a of particles){
+ a.x+=a.vx*scale*dt/width;a.y+=a.vy*scale*dt/height;
+ const hitX=a.x<0||a.x>1,hitY=a.y<0||a.y>1;
+ while(a.x<0||a.x>1){if(a.x<0){a.x=-a.x;a.vx=Math.abs(a.vx)}if(a.x>1){a.x=2-a.x;a.vx=-Math.abs(a.vx)}}
+ while(a.y<0||a.y>1){if(a.y<0){a.y=-a.y;a.vy=Math.abs(a.vy)}if(a.y>1){a.y=2-a.y;a.vy=-Math.abs(a.vy)}}
+ if(dt&&hitX)flashes.push({x:a.vx>0?left:right,y:top+a.y*height,life:.16});
+ if(dt&&hitY)flashes.push({x:left+a.x*width,y:a.vy>0?top:bottom,life:.16});
+ }
+ const tracked=particles[0];
+ if(dt&&$('trail').checked){trail.push([left+tracked.x*width,top+tracked.y*height]);if(trail.length>90)trail.shift()}
+ c.save();c.beginPath();c.rect(left,top,width,height);c.clip();
+ if($('trail').checked&&trail.length){c.beginPath();trail.forEach((pt,i)=>i?c.lineTo(...pt):c.moveTo(...pt));c.strokeStyle='#ffcf7577';c.lineWidth=1.5;c.stroke()}
+ particles.forEach((a,i)=>{const x=left+a.x*width,y=top+a.y*height;c.fillStyle=i===0?'#ffcf75':'#75d7e4';c.beginPath();c.arc(x,y,i===0?4:2.7,0,Math.PI*2);c.fill();
+ if($('vectors').checked){const dx=a.vx*scale*.15,dy=a.vy*scale*.15,ang=Math.atan2(dy,dx);c.strokeStyle=i===0?'#ffcf75':'#75d7e488';c.beginPath();c.moveTo(x,y);c.lineTo(x+dx,y+dy);c.lineTo(x+dx-4*Math.cos(ang-.5),y+dy-4*Math.sin(ang-.5));c.moveTo(x+dx,y+dy);c.lineTo(x+dx-4*Math.cos(ang+.5),y+dy-4*Math.sin(ang+.5));c.stroke()}});
+ c.restore();
+ flashes=flashes.filter(f=>{f.life-=dt;c.fillStyle='rgba(255,220,146,'+Math.max(0,f.life*5)+')';c.beginPath();c.arc(f.x,f.y,5,0,2*Math.PI);c.fill();return f.life>0});
+}
+function drag(e){const rect=$('chamber').getBoundingClientRect();setVariable('volume',(Math.round(((e.clientX-rect.left-22)/(rect.width-65)*30)*10)/10).toString())}
+$('chamber').onpointerdown=e=>{if($('volume').disabled)return;const r=$('chamber').getBoundingClientRect(),piston=22+(r.width-65)*V/30;if(Math.abs(e.clientX-r.left-piston)>35)return;dragging=true;$('chamber').setPointerCapture(e.pointerId);drag(e)};
+$('chamber').onpointermove=e=>{if(dragging)drag(e)};
+$('chamber').onpointerup=$('chamber').onpointercancel=()=>{dragging=false};
+function axisPlot(id,{xMin,xMax,yMax,xLabel,yLabel,ticks}){
+ const[c,w,h]=fit($(id));c.clearRect(0,0,w,h);const L=58,B=h-44,W=w-L-18,H=h-76;
+ const X=x=>L+(x-xMin)/(xMax-xMin)*W,Y=y=>B-y/yMax*H;
+ c.font='11px system-ui';c.lineWidth=1;c.setLineDash([]);
+ for(let i=0;i<=4;i++){const yy=yMax*i/4;c.strokeStyle='#e2eaea';c.beginPath();c.moveTo(L,Y(yy));c.lineTo(L+W,Y(yy));c.stroke();c.fillStyle='#59717a';c.textAlign='right';c.fillText(yy.toFixed(yMax<2?2:yMax<50?1:0),L-8,Y(yy)+4)}
+ const xTicks=ticks||Array.from({length:5},(_,i)=>xMin+(xMax-xMin)*i/4);
+ xTicks.forEach(x=>{c.fillStyle='#59717a';c.textAlign='center';c.fillText(xMax<=1?x.toFixed(2):x===-273.15?'−273.15':x.toFixed(0),X(x),B+19)});
+ c.strokeStyle='#829ba3';c.beginPath();c.moveTo(L,B-H);c.lineTo(L,B);c.lineTo(L+W,B);c.stroke();c.fillStyle='#193542';c.textAlign='left';c.fillText(yLabel,4,17);c.textAlign='right';c.fillText(xLabel,w-8,h-3);
+ return{c,w,h,L,B,W,H,X,Y};
+}
+function drawGraph(){
+ if(!baseline)return;
+ const isT=mode==='charles'||mode==='pressure',inv=graphChoice==='inverse',celsius=graphChoice==='celsius',amt=mode==='amount';
+ const xMin=celsius?-273.15:inv||isT||amt?0:5,xMax=celsius?376.85:inv?.2:isT?650:amt?1.05:30;
+ const fn=(x,s)=>mode==='charles'?s.n*R*(x+(celsius?273.15:0))/s.p:mode==='pressure'?s.n*R*(x+(celsius?273.15:0))/s.V:amt?x*R*s.T/s.p:inv?s.n*R*s.T*x:s.n*R*s.T/x;
+ const current=snapshot(),end=inv||isT||amt?xMax:xMin,show=$('showReference').checked;
+ const yMax=Math.max(fn(end,current),show?fn(end,baseline):0,...records.map(r=>mode==='charles'||amt?r.V:r.p),1)*1.13;
+ const xLabel=celsius?'θ / °C':inv?'1/V / L⁻¹':isT?'T / K':amt?'n / mol':'V / L',yLabel=mode==='charles'||amt?'V / L':'p / kPa';
+ const plot=axisPlot('graph',{xMin,xMax,yMax,xLabel,yLabel,ticks:celsius?[-273.15,-100,100,300]:graphChoice==='volume'?[5,10,15,20,25,30]:undefined});const{c,X,Y}=plot;
+ function curve(s,color){
+ for(let section=0;section<2;section++){
+ c.strokeStyle=color;c.lineWidth=2.3;c.setLineDash(section===0?[5,5]:[]);
+ c.beginPath();let started=false;
+ for(let i=0;i<=240;i++){const x=xMin+(xMax-xMin)*i/240,t=x+(celsius?273.15:0),extrapolated=isT?t<150||t>600:inv?x<1/30:amt?x<.2||x>1:false;
+ if(extrapolated!==(section===0)){started=false;continue}if(!started){c.moveTo(X(x),Y(fn(x,s)));started=true}else c.lineTo(X(x),Y(fn(x,s)))}
+ c.stroke()}c.setLineDash([]);
+ }
+ if(show)curve(baseline,'#b16b35');curve(current,'#087f83');
+ const xFor=s=>isT?s.T-(celsius?273.15:0):inv?1/s.V:amt?s.n:s.V,yFor=s=>mode==='charles'||amt?s.V:s.p;
+ records.forEach(r=>{c.fillStyle='#b16b35';c.fillRect(X(xFor(r))-3,Y(yFor(r))-3,6,6)});
+ if(show){c.strokeStyle='#b16b35';c.lineWidth=2;c.beginPath();c.arc(X(xFor(baseline)),Y(yFor(baseline)),7,0,Math.PI*2);c.stroke()}
+ c.fillStyle='#087f83';c.beginPath();c.arc(X(xFor(current)),Y(yFor(current)),5,0,Math.PI*2);c.fill();
+ const title=(mode==='charles'?'V':mode==='amount'?'V':'p')+'–'+(celsius?'θ':inv?'1/V':isT?'T':amt?'n':'V')+' 關係圖';$('graphTitle').textContent=title;
+ const slope=mode==='charles'?n*R/p:mode==='pressure'?n*R/V:amt?R*T/p:n*R*T;
+ $('graphNote').textContent=isT?'斜率 = '+(mode==='charles'?'nR/p':'nR/V')+' = '+slope.toFixed(4)+(mode==='charles'?' L/K。':' kPa/K。')+'虛線為理想氣體外推；截距 '+(celsius?'−273.15 °C':'0 K')+'，不是可實際到達的實驗狀態。':inv?'斜率 = nRT = '+slope.toFixed(2)+' kPa·L。通過原點表示 p ∝ 1/V；1/V = 0 是無限體積的極限。':amt?'斜率 = RT/p = '+slope.toFixed(2)+' L/mol。固定 T、p 時，V 與 n 成正比。':'固定 T、n 時，p 與 V 成反比。切換至 1/V，檢查是否通過原點。';
+ $('graph').setAttribute('aria-label',title+'，目前溫度 '+T+' K、體積 '+V.toFixed(2)+' L、壓強 '+p.toFixed(2)+' kPa。'+$('graphNote').textContent);
+}
+function updateComparison(){
+ if(!baseline)return;const b=baseline;
+ $('baselineLabel').textContent='參考：'+gasName(b.M)+' · '+b.T+' K · '+b.V.toFixed(2)+' L · '+b.n.toFixed(2)+' mol · '+b.p.toFixed(1)+' kPa';
+ $('ratios').innerHTML=[['p / p₀',p/b.p],['V / V₀',V/b.V],['T / T₀',T/b.T],['cᵣₘₛ / c₀',Math.sqrt(T/b.T*b.M/M)]].map(([label,value])=>'<div><span>'+label+'</span><strong>'+value.toFixed(2)+'×</strong></div>').join('');
+ const flux=(n/V)/(b.n/b.V)*Math.sqrt(T/b.T*b.M/M),impulse=Math.sqrt(M/b.M*T/b.T);
+ $('fluxRatio').textContent=flux.toFixed(2)+'×';$('impulseRatio').textContent=impulse.toFixed(2)+'×';$('pressureRatio').textContent=(p/b.p).toFixed(2)+'×';
+ $('collisionExplain').textContent='撞壁頻率 ∝ (N/V)√(T/M)；每次平均法向衝量 ∝ √(MT)。兩者相乘得到 p ∝ NT/V。分子與壁碰撞時，法向動量改變產生作用力，p = F/A。';
+ $('microValues').textContent='N = nNₐ = '+(n*NA).toExponential(3)+' 個；分子質量 m = M/Nₐ = '+(M/NA).toExponential(3)+' kg；⟨c²⟩ = '+(3*R*T/M).toExponential(3)+' m²/s²。';
+ $('totalEnergy').innerHTML='總平動動能 = ³⁄₂nRT = <b>'+(1.5*n*R*T).toFixed(1)+' J</b>。<br><span class="hint">單原子理想氣體可把此值視為內能；雙原子氣體還可有轉動等內部自由度。</span>';
+}
+function drawDistribution(){
+ const other=.031999,compare=$('compareGas').checked,rms=Math.sqrt(3*R*T/M),rms2=Math.sqrt(3*R*T/other),xMax=Math.ceil(Math.max(rms,compare?rms2:0)*2.4/100)*100;
+ // Maxwell speed density, expressed per 100 m/s for readable vertical values.
+ const density=(v,mass)=>{const a=mass/(2*R*T);return 4/Math.sqrt(Math.PI)*Math.pow(a,1.5)*v*v*Math.exp(-a*v*v)*100};
+ const peak=mass=>density(Math.sqrt(2*R*T/mass),mass),yMax=Math.max(peak(M),compare?peak(other):0)*1.2;
+ const{c,X,Y,B}=axisPlot('distribution',{xMin:0,xMax,yMax,xLabel:'速率 c / (m/s)',yLabel:'機率密度 / (100 m/s)⁻¹'});
+ for(const [mass,color] of [[M,'#087f83'],...(compare?[[other,'#b16b35']]:[])]){
+ c.strokeStyle=color;c.lineWidth=2.2;c.beginPath();for(let i=0;i<=200;i++){const v=xMax*i/200;i?c.lineTo(X(v),Y(density(v,mass))):c.moveTo(X(v),Y(0))}c.stroke();
+ const speed=Math.sqrt(3*R*T/mass);c.setLineDash([4,4]);c.beginPath();c.moveTo(X(speed),B);c.lineTo(X(speed),Y(peak(mass)));c.stroke();c.setLineDash([]);
+ }
+ $('gasComparison').textContent='實線：青色 '+gasName(M)+'，cᵣₘₛ = '+rms.toFixed(0)+' m/s。'+(compare?'橙色 O₂，cᵣₘₛ = '+rms2.toFixed(0)+' m/s。同溫時平均平動動能相同；摩爾質量較小，方均根速率較大。':'同一氣體內的分子並非全以相同速率運動。');
+ $('distribution').setAttribute('aria-label',$('gasComparison').textContent);
+}
+function renderRows(){
+ $('rows').innerHTML=records.length?records.map((r,i)=>'<tr><td>'+(i+1)+' / '+gasName(r.M)+'</td><td>'+r.T+'</td><td>'+r.V.toFixed(2)+'</td><td>'+r.n.toFixed(2)+'</td><td>'+r.p.toFixed(1)+'</td><td>'+r.inv.toFixed(mode==='boyle'?1:4)+'</td></tr>').join(''):'<tr><td class="empty" colspan="6">尚未記錄。調整數值後按「記錄數據」。</td></tr>';
+ $('export').disabled=!records.length;$('clear').disabled=!records.length;
+}
+$('record').onclick=()=>{records.push({...snapshot(),inv:invariant()});renderRows();drawGraph();$('inputStatus').textContent='已記錄第 '+records.length+' 組數據。'};
+$('clear').onclick=()=>{records=[];renderRows();drawGraph()};
+$('export').onclick=()=>{
+ const csv='\uFEFF'+[['實驗','氣體','M (kg/mol)','T (K)','V (L)','n (mol)','p (kPa)',modes[mode].inv],...records.map(r=>[modes[mode].name,gasName(r.M),r.M,r.T,r.V,r.n,r.p,r.inv])].map(r=>r.join(',')).join('\r\n');
+ const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='gas-laws-'+mode+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+const questions=[{q:'固定氣體的溫度及物質的量，體積減半，壓強會……',a:['不變','加倍','減半'],correct:1,why:'pV 為常數，所以體積減半時壓強加倍。溫度不變，平均平動動能亦不變。'},{q:'把氣體由 27 °C 加熱至 54 °C（體積及物質的量不變），壓強會加倍嗎？',a:['會，因為 54 ÷ 27 = 2','不會，只增加約 9%','不會，壓強不變'],correct:1,why:'必須使用 K：327.15 ÷ 300.15 ≈ 1.09，因此壓強約增加 9%。'},{q:'同一種氣體的絕對溫度加倍，方均根速率變為原來的……',a:['2 倍','4 倍','√2 倍'],correct:2,why:'平均平動動能與 T 成正比，而動能與速率平方有關，所以 vᵣₘₛ ∝ √T。'},{q:'固定體積及溫度，加入更多同一種氣體，甚麼量會增加？',a:['壓強','每個分子的平均平動動能','方均根速率'],correct:0,why:'分子數增多，總撞壁頻率增加，壓強上升。平均平動動能只取決於溫度。'}];
+questions.push({q:'固定溫度和物質的量，哪一幅線圖應通過原點？',a:['p 對 V','p 對 1/V','p 對攝氏溫度'],correct:1,why:'p = nRT(1/V)。固定 n、T 時，p 對 1/V 是通過原點的直線。'},
+{q:'同溫的氫氣和氧氣，每個分子的平均平動動能……',a:['氫氣較大','氧氣較大','兩者相同'],correct:2,why:'平均平動動能 = ³⁄₂kᵦT，只取決於 T。氫分子較輕，所以速率較大。'},
+{q:'在固定溫度及壓強下，把分子數加倍，體積會……',a:['加倍','減半','不變'],correct:0,why:'V = NkᵦT/p，所以 V 加倍。N/V 維持不變，撞壁頻率（每單位面積）不變。'},
+{q:'氣體對容器壁的壓強直接源於……',a:['分子互相吸引','分子撞壁時改變動量','分子互相碰撞時產生重量'],correct:1,why:'分子撞壁並反彈，向壁傳遞動量，對壁產生力；壓強是每單位面積的法向力。'},
+{q:'固定氣體量，p–T（K）線圖的斜率增加，代表固定體積……',a:['較大','較小','必定不變'],correct:1,why:'p = (nR/V)T，斜率為 nR/V；n 不變時，V 越小，斜率越大。'});
+function showQuestion(){
+ const q=questions[qIndex];$('question').textContent=(qIndex+1)+' / '+questions.length+'　'+q.q;$('feedback').textContent='';$('answers').replaceChildren();
+ q.a.forEach((text,i)=>{const b=document.createElement('button');b.textContent=text;b.setAttribute('aria-pressed','false');b.onclick=()=>{$('feedback').textContent=(i===q.correct?'✓ 正確。':'再想一想。')+q.why;Array.from($('answers').children).forEach((el,j)=>{el.classList.toggle('active',j===i);el.setAttribute('aria-pressed',j===i)})};$('answers').append(b)})
+}
+$('next').onclick=()=>{qIndex=(qIndex+1)%questions.length;showQuestion()};
+const observer=new ResizeObserver(()=>{drawGraph();drawDistribution();trail=[];drawChamber(0)});observer.observe($('chamber'));observer.observe($('distribution'));
+let last=0;function frame(time){const dt=Math.min((time-last)/1000,.035);last=time;if(running&&!document.hidden&&!$('theoryView').hidden)drawChamber(dt*+$('rate').value);requestAnimationFrame(frame)}
+setMode('boyle');showQuestion();requestAnimationFrame(frame);
+})();
+
+</script>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),h0=.42,minHeight=.16,maxHeight=.86;
+const experiments={
+ boyle:{condition:'固定電壓、滾珠數目',law:'pV = 常數',prediction:'試把總負重由 2.0 格加至 4.0 格。預測：活塞高度會怎樣改變？',reason:'電壓不變 → 滾珠的平均速率不變。負重增加 → 需要更大的向上支撐力 → 活塞下降，滾珠更頻密撞擊活塞。比喻：T、N 不變，p ↑、V ↓。'},
+ charles:{condition:'固定負重、滾珠數目；活塞自由',law:'V / T = 常數',prediction:'逐漸提高電壓。留意滾珠速率和活塞高度；負重保持不變。',reason:'電壓提高 → 滾珠運動加快，撞擊更猛烈 → 活塞上升。空間增加，撞擊頻率下降，平均支撐力重新與負重平衡。比喻：p、N 不變，T ↑、V ↑。'},
+ pressure:{condition:'固定活塞高度、滾珠數目',law:'p / T = 常數',prediction:'活塞已用夾具固定。提高電壓，觀察維持相同高度需要多大的向下作用力。',reason:'電壓提高 → 滾珠運動加快。在相同空間內，滾珠更頻密、更猛烈地撞擊活塞 → 夾具需要施加更大的向下作用力。比喻：V、N 不變，T ↑、p ↑。'},
+ amount:{condition:'固定電壓、負重；活塞自由',law:'V / N = 常數',prediction:'把滾珠由 40 顆增至 80 顆。預測：平衡高度及分子密度會怎樣改變？',reason:'電壓不變，滾珠平均速率不變。加入滾珠 → 原來高度的撞擊頻率增加 → 活塞上升，直到平均支撐力再次等於負重。比喻：T、p 不變，N ↑、V ↑，N/V 不變。'},
+ free:{condition:'自由調節；可選擇固定高度',law:'pV ∝ NT',prediction:'試一次只改變一個控制項；先判斷哪些量不變，再觀察結果。',reason:'把電壓、滾珠數目和負重分別對應温度、分子數與平衡壓強。自由活塞以改變高度取得平衡；夾具固定後，額外作用力由夾具提供。'}
+};
+let experiment='free',voltage=6,count=40,load=2,locked=false,lockedHeight=h0,height=h0,balls=[],clock=0;
+const activeWeights=new Set(),weightButtons=[];let weightDrag=null,dialDrag=null,apparatus=null;
+let playing=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+function state(){
+ const temperature=(voltage/6)**2,number=count/40,idealHeight=h0*number*temperature/(load/2);
+ const target=locked?lockedHeight:Math.max(minHeight,Math.min(maxHeight,idealHeight));
+ return{temperature,number,idealHeight,target,pressure:number*temperature*h0/target,limited:!locked&&(idealHeight<minHeight||idealHeight>maxHeight)};
+}
+function populate(){while(balls.length<count)balls.push({x:.05+Math.random()*.9,y:.03+Math.random()*Math.max(.02,height-.07),vx:(Math.random()-.5)*.55,vy:(Math.random()-.3)*.7});balls.length=count}
+function update(){
+ const s=state();if(!playing||$('beadView').hidden)height=s.target;
+ populate();
+ for(const [id,value] of [['beadVoltage',voltage],['beadLoad',load],['beadCount',count]])$(id).value=value;
+ $('beadVoltageValue').textContent=voltage.toFixed(1)+' 格';$('beadLoadValue').textContent=load.toFixed(1)+' 格';$('beadCountValue').textContent=count+' 顆';
+ const weightCount=Math.round((load-1)/.5);
+ while(activeWeights.size>weightCount)activeWeights.delete([...activeWeights].pop());
+ for(let i=0;activeWeights.size<weightCount;i++)if(!activeWeights.has(i))activeWeights.add(i);
+ weightButtons.forEach((button,i)=>{button.disabled=$('beadLoad').disabled;button.setAttribute('aria-pressed',activeWeights.has(i));button.setAttribute('aria-label','砝碼 '+(i+1)+'，0.5 格，'+(activeWeights.has(i)?'在活塞上，按下移回架上':'在架上，按下放到活塞'))});
+ $('beadDial').setAttribute('aria-disabled',$('beadVoltage').disabled);$('beadDial').setAttribute('aria-valuenow',voltage);$('beadDial').setAttribute('aria-valuetext',voltage.toFixed(1)+' 格');$('beadDial').style.setProperty('--dial-angle',(-135+(voltage-3)*45)+'deg');
+ $('beadDialValue').textContent=voltage.toFixed(1)+' 格';$('beadDialState').textContent=$('beadVoltage').disabled?'本實驗固定電壓':'順時針增加';
+ $('beadLocked').checked=locked;
+ $('beadTempRatio').textContent=s.temperature.toFixed(2)+'×';$('beadCountRatio').textContent=s.number.toFixed(2)+'×';$('beadHeightRatio').textContent=(s.target/h0).toFixed(2)+'×';$('beadPressureRatio').textContent=s.pressure.toFixed(2)+'×';
+ const config=experiments[experiment];$('beadCondition').textContent=config.condition;$('beadLaw').textContent=config.law;$('beadPrediction').textContent=config.prediction;$('beadReason').textContent=config.reason;
+ $('beadLockHelp').textContent=locked?'高度固定。所加負重保持原值，額外作用力由夾具提供。':'自由活塞會調整高度，直至滾珠的平均向上支撐力與總負重平衡。';
+ const extra=2*s.pressure-load;
+ $('beadClampForce').textContent=locked?'維持此高度所需的總向下作用力：'+(2*s.pressure).toFixed(2)+' 格。其中負重 '+load.toFixed(1)+' 格；夾具需額外'+(extra<0?'向上':'向下')+'施力 '+Math.abs(extra).toFixed(2)+' 格。':'自由活塞：負重代表平衡時所需的向上支撐力，並非分子的速率。';
+ $('beadStatus').textContent=s.limited?'活塞到達'+(s.idealHeight>maxHeight?'上':'下')+'限，支架承受剩餘作用力；此時內外作用力不再單靠負重平衡。':locked?'固定高度：壓強改變，由夾具承受作用力差額。':'讀數顯示新的平均平衡狀態；動畫中的活塞會逐漸移至該高度。';
+ $('beadStatus').classList.toggle('bead-limits',s.limited);
+ $('beadCanvas').setAttribute('aria-label','滾珠模擬器：電壓 '+voltage.toFixed(1)+' 格，'+count+' 顆滾珠，總負重 '+load.toFixed(1)+' 格。'+(locked?'活塞高度固定。':'活塞自由活動。')+'體積指標為參考的 '+(s.target/h0).toFixed(2)+' 倍，壓強指標為 '+s.pressure.toFixed(2)+' 倍。'+(s.limited?'活塞已達行程極限。':''));
+ draw(0);
+}
+function selectExperiment(){
+ cancelManipulation();activeWeights.clear();
+ experiment=$('beadExperiment').value;voltage=6;count=40;load=2;locked=experiment==='pressure';lockedHeight=h0;height=h0;balls=[];
+ $('beadVoltage').disabled=!['charles','pressure','free'].includes(experiment);
+ $('beadLoad').disabled=!['boyle','free'].includes(experiment);
+ $('beadCount').disabled=!['amount','free'].includes(experiment);
+ $('beadLocked').disabled=experiment!=='free';update();
+}
+$('beadExperiment').onchange=selectExperiment;$('beadReset').onclick=selectExperiment;
+function setControl(id,raw){
+ const input=$(id),value=Number(raw);if(!Number.isFinite(value)||input.disabled)return;
+ const bounded=Number((+input.min+Math.round((Math.max(+input.min,Math.min(+input.max,value))-+input.min)/+input.step)*+input.step).toFixed(2));
+ if(id==='beadVoltage')voltage=bounded;else if(id==='beadLoad')load=bounded;else count=Math.round(bounded);update();
+}
+for(const id of ['beadVoltage','beadLoad','beadCount'])$(id).oninput=e=>setControl(id,e.target.value);
+function cancelManipulation(){
+ for(const [element,gesture] of [[weightDrag?weightButtons[weightDrag.index]:null,weightDrag],[$('beadDial'),dialDrag]])if(element&&gesture&&element.hasPointerCapture(gesture.pointerId))element.releasePointerCapture(gesture.pointerId);
+ weightDrag=null;dialDrag=null;$('beadStage').classList.remove('is-dragging');weightButtons.forEach(button=>button.classList.remove('dragging'));
+}
+function moveWeight(index,ontoPiston){
+ if($('beadLoad').disabled)return;
+ if(ontoPiston)activeWeights.add(index);else activeWeights.delete(index);
+ load=1+activeWeights.size*.5;update();
+}
+function localPointer(e){const rect=$('beadStage').getBoundingClientRect();return{x:e.clientX-rect.left,y:e.clientY-rect.top}}
+for(let i=0;i<6;i++){
+ const button=document.createElement('button');button.type='button';button.className='bead-weight';button.textContent='0.5';button.dataset.weight=i;$('beadWeights').append(button);weightButtons.push(button);
+ button.onclick=e=>{if(e.detail===0)moveWeight(i,!activeWeights.has(i))};
+ button.onpointerdown=e=>{
+  if(button.disabled||weightDrag||dialDrag||e.button!==0)return;
+  const p=localPointer(e);weightDrag={index:i,pointerId:e.pointerId,start:p,moved:false};button.setPointerCapture(e.pointerId);
+ };
+ button.onpointermove=e=>{
+  if(!weightDrag||weightDrag.index!==i||weightDrag.pointerId!==e.pointerId)return;
+  const p=localPointer(e);if(Math.hypot(p.x-weightDrag.start.x,p.y-weightDrag.start.y)>5)weightDrag.moved=true;
+  if(!weightDrag.moved)return;
+  button.classList.add('dragging');$('beadStage').classList.add('is-dragging');button.style.left=Math.max(0,Math.min(apparatus.w-apparatus.weightW,p.x-apparatus.weightW/2))+'px';button.style.top=Math.max(0,Math.min(apparatus.h-apparatus.weightH,p.y-apparatus.weightH/2))+'px';
+ };
+ button.onpointerup=e=>{
+  if(!weightDrag||weightDrag.index!==i||weightDrag.pointerId!==e.pointerId)return;
+  const gesture=weightDrag,p=localPointer(e),g=apparatus;cancelManipulation();
+  if(!gesture.moved)moveWeight(i,!activeWeights.has(i));
+  else if(p.x>=g.left-12&&p.x<=g.right+12&&p.y>=g.dropTop&&p.y<=g.piston+22)moveWeight(i,true);
+  else if(p.x>=g.rackX-10&&p.x<=g.rackX+g.rackW+10&&p.y>=g.rackY-10&&p.y<=g.rackY+g.rackH+10)moveWeight(i,false);
+  draw(0);
+ };
+ button.onpointercancel=button.onlostpointercapture=()=>{if(weightDrag?.index===i){cancelManipulation();draw(0)}};
+}
+function dialAngle(e){const rect=$('beadDial').getBoundingClientRect();return Math.atan2(e.clientY-rect.top-rect.height/2,e.clientX-rect.left-rect.width/2)*180/Math.PI}
+$('beadDial').onpointerdown=e=>{
+ if($('beadVoltage').disabled||dialDrag||weightDrag||e.button!==0)return;
+ dialDrag={pointerId:e.pointerId,last:dialAngle(e),angle:-135+(voltage-3)*45};$('beadDial').setPointerCapture(e.pointerId);
+};
+$('beadDial').onpointermove=e=>{
+ if(!dialDrag||dialDrag.pointerId!==e.pointerId)return;
+ const angle=dialAngle(e);let delta=angle-dialDrag.last;if(delta>180)delta-=360;if(delta< -180)delta+=360;
+ dialDrag.last=angle;dialDrag.angle=Math.max(-135,Math.min(135,dialDrag.angle+delta));setControl('beadVoltage',3+(dialDrag.angle+135)/45);
+};
+$('beadDial').onpointerup=$('beadDial').onpointercancel=$('beadDial').onlostpointercapture=e=>{if(dialDrag?.pointerId===e.pointerId)dialDrag=null};
+$('beadDial').onkeydown=e=>{
+ if($('beadVoltage').disabled)return;
+ const steps={ArrowUp:.1,ArrowRight:.1,ArrowDown:-.1,ArrowLeft:-.1,PageUp:.5,PageDown:-.5};
+ if(e.key in steps||e.key==='Home'||e.key==='End'){e.preventDefault();setControl('beadVoltage',e.key==='Home'?3:e.key==='End'?9:voltage+steps[e.key])}
+};
+$('beadLocked').onchange=e=>{lockedHeight=state().target;locked=e.target.checked;update()};
+function pauseLabel(){$('beadPause').textContent=playing?'暫停動畫':'播放動畫';$('beadPause').setAttribute('aria-pressed',!playing)}
+$('beadPause').onclick=()=>{playing=!playing;pauseLabel();if(!playing){height=state().target;draw(0)}};
+function showView(beads){
+ cancelManipulation();
+ document.body.classList.toggle('bead-active',beads);
+ $('theoryView').hidden=beads;$('beadView').hidden=!beads;
+ for(const [id,selected] of [['theoryViewButton',!beads],['beadViewButton',beads]]){$(id).setAttribute('aria-pressed',selected);$(id).classList.toggle('active',selected)}
+ if(beads)draw(0);
+}
+$('theoryViewButton').onclick=()=>showView(false);$('beadViewButton').onclick=()=>showView(true);
+function draw(dt){
+ if($('beadView').hidden)return;
+ const canvas=$('beadCanvas'),rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height,d=devicePixelRatio||1;if(!w||!h)return;
+ if(canvas.width!==Math.round(w*d)||canvas.height!==Math.round(h*d)){canvas.width=Math.round(w*d);canvas.height=Math.round(h*d)}
+ const c=canvas.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,w,h);
+ const compact=w<520,rackW=compact?100:190,gap=compact?12:32,weightW=compact?44:64,weightH=compact?32:40,dialSize=compact?88:116;
+ const s=state(),width=Math.min(480,w-32-rackW-gap-12),left=Math.max(32,(w-width-rackW-gap)/2),right=left+width,top=compact?76:64,bottom=h-120,tubeHeight=bottom-top,r=compact?4.5:7;
+ height+=(s.target-height)*Math.min(1,dt*5);clock+=dt;
+ const piston=bottom-height*tubeHeight,shaking=dt?Math.sin(clock*32)*voltage/3:0;
+ const columns=Math.max(1,Math.min(3,Math.floor((width+4)/(weightW+4)))),dropTop=Math.max(8,piston-Math.ceil(6/columns)*(weightH+4)-6);
+ apparatus={w,h,left,right,piston,dropTop,weightW,weightH,rackX:right+gap,rackY:64,rackW,rackH:compact?184:224};
+ const stage=$('beadStage');for(const [name,value] of [['weight-width',weightW],['weight-height',weightH],['dial-size',dialSize],['hardware-font',compact?14:17]])stage.style.setProperty('--'+name,value+'px');
+ const rack=$('beadRack');for(const [name,value] of [['left',apparatus.rackX],['top',apparatus.rackY],['width',rackW],['height',apparatus.rackH]])rack.style[name]=value+'px';
+ const drop=$('beadPistonDrop');drop.style.left=left+'px';drop.style.top=dropTop+'px';drop.style.width=width+'px';drop.style.height=(piston+22-dropTop)+'px';
+ const onPiston=[...activeWeights];weightButtons.forEach((button,i)=>{
+  if(weightDrag?.index===i&&weightDrag.moved)return;
+  const slot=onPiston.indexOf(i),on=slot>=0,rackGap=compact?4:12,pistonRow=Math.floor(slot/columns),rowCount=Math.min(columns,onPiston.length-pistonRow*columns);
+  button.style.left=(on?left+width/2-(rowCount*weightW+(rowCount-1)*4)/2+(slot%columns)*(weightW+4):apparatus.rackX+(rackW-2*weightW-rackGap)/2+(i%2)*(weightW+rackGap))+'px';
+  button.style.top=(on?piston-weightH-3-pistonRow*(weightH+4):apparatus.rackY+59+Math.floor(i/2)*(weightH+12))+'px';
+ });
+ const dialTop=h-dialSize-90;$('beadDial').style.left=(apparatus.rackX+(rackW-dialSize)/2)+'px';$('beadDial').style.top=dialTop+'px';$('beadDialLabel').style.left=apparatus.rackX+'px';$('beadDialLabel').style.top=(dialTop+dialSize+8)+'px';$('beadDialLabel').style.width=rackW+'px';
+ c.strokeStyle='#7ea8b4';c.lineWidth=2;c.fillStyle='#1b4050';c.fillRect(left,top,width,bottom-top);c.strokeRect(left,top,width,bottom-top);
+ c.beginPath();c.ellipse(left+width/2,top,width/2,7,0,0,Math.PI*2);c.stroke();
+ c.font=(compact?13:16)+'px system-ui';c.fillStyle='#bbd8df';c.textAlign='right';
+ for(const multiple of [0,1,2]){const y=bottom-h0*multiple*tubeHeight;c.fillText(multiple+'h₀',left-10,y+4);c.beginPath();c.moveTo(left-6,y);c.lineTo(left,y);c.stroke()}
+ const radiusY=r/tubeHeight,radiusX=r/width;
+ for(const b of balls){
+ b.x+=b.vx*dt;b.vy-=.65*dt;b.y+=b.vy*dt;
+ if(b.x<radiusX){b.x=radiusX;b.vx=Math.abs(b.vx)}if(b.x>1-radiusX){b.x=1-radiusX;b.vx=-Math.abs(b.vx)}
+ if(b.y<radiusY){b.y=radiusY;b.vy=(.68+Math.random()*.32)*voltage/6;if(dt)b.vx=(Math.random()-.5)*.65*voltage/6}
+ if(b.y>height-radiusY-.025){b.y=Math.max(radiusY,height-radiusY-.025);b.vy=-Math.abs(b.vy)}
+ }
+ // Collisions are illustrative; the teaching relation sets the mean piston height.
+ for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){
+ const a=balls[i],b=balls[j],dx=(b.x-a.x)*width,dy=(b.y-a.y)*tubeHeight,dist=Math.hypot(dx,dy);
+ if(!dt||dist===0||dist>=2*r)continue;const nx=dx/dist,ny=dy/dist,closing=(b.vx-a.vx)*width*nx+(b.vy-a.vy)*tubeHeight*ny;
+ if(closing<0){a.vx+=closing*nx/width;a.vy+=closing*ny/tubeHeight;b.vx-=closing*nx/width;b.vy-=closing*ny/tubeHeight}
+ }
+ c.save();c.beginPath();c.rect(left+2,piston+8,width-4,Math.max(0,bottom-piston-10));c.clip();
+ for(let i=0;i<balls.length;i++){const b=balls[i],x=left+b.x*width,y=bottom-b.y*tubeHeight;c.fillStyle=i===0?'#ffcf75':'#8fdae4';c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fill();c.fillStyle='#efffff';c.beginPath();c.arc(x-1,y-1,1,0,Math.PI*2);c.fill()}
+ c.restore();
+ c.fillStyle='#d9d9c1';c.fillRect(left+2,piston-3,width-4,12);c.beginPath();c.ellipse(left+width/2,piston-3,width/2-2,6,0,0,Math.PI*2);c.fill();c.strokeStyle='#a0b5ae';c.stroke();
+ if(locked){c.fillStyle='#f2a467';c.fillRect(left-10,piston-9,12,25);c.fillRect(right-2,piston-9,12,25)}
+ c.textAlign='center';c.fillStyle='#bbd8df';c.fillText('透明筒',left+width/2,32);c.fillStyle='#e5cead';c.fillText(locked?'夾具固定':'自由活塞',left+width/2,piston+24);
+ c.fillStyle='#5ac3bf';c.fillRect(left-5,bottom+shaking,width+10,8);c.fillStyle='#bbd8df';c.fillText('振動底板',left+width/2,bottom+22);
+ c.fillStyle='#30566a';c.fillRect(left+width*.12,bottom+34,width*.76,60);c.fillStyle='#92afb6';c.beginPath();c.arc(left+width/2,bottom+64,compact?22:27,0,Math.PI*2);c.fill();
+ c.strokeStyle='#17394b';c.lineWidth=3;c.beginPath();c.moveTo(left+width/2,bottom+64);c.lineTo(left+width/2+Math.cos(clock*10)*18,bottom+64+Math.sin(clock*10)*18);c.stroke();c.lineWidth=1;
+ c.fillStyle='#bbd8df';c.fillText('電動機',left+width/2,bottom+113);c.textAlign='left';
+}
+new ResizeObserver(()=>draw(0)).observe($('beadCanvas'));
+let last=0;function frame(time){const dt=Math.min((time-last)/1000,.035);last=time;if(playing&&!document.hidden&&!$('beadView').hidden)draw(dt);requestAnimationFrame(frame)}
+selectExperiment();pauseLabel();requestAnimationFrame(frame);
+})();
+</script></body></html>
